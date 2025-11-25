@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* iOS Fitness+ Premium - Light Mode */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 10%;
+    --primary: 210 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 20%;
+    --accent: 280 100% 70%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 45%;
+    --border: 0 0% 90%;
+    --input: 0 0% 95%;
+    --ring: 210 100% 50%;
+  }
+
+  .dark {
+    /* iOS Fitness+ Premium - Dark Mode */
+    --background: 0 0% 8%;
+    --foreground: 0 0% 98%;
+    --primary: 210 100% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 95%;
+    --accent: 280 100% 75%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 65%;
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
+    --ring: 210 100% 60%;
+  }
+
+  .dark-red {
+    /* Dark Red Theme - Black and Red */
+    --background: 0 0% 5%;
+    --foreground: 0 0% 95%;
+    --primary: 0 100% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 95%;
+    --accent: 0 100% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 70%;
+    --border: 0 100% 25%;
+    --input: 0 0% 10%;
+    --ring: 0 100% 50%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Скрываем Next.js dev overlay и другие элементы в левом нижнем углу */
+  #__next-build-watcher,
+  [data-nextjs-dialog],
+  [data-nextjs-dialog-overlay],
+  nextjs-portal,
+  #__next-dev-overlay,
+  iframe[src*="__nextjs"],
+  /* Скрываем элементы в левом нижнем углу (dev overlay) */
+  div[style*="position: fixed"][style*="left: 0"][style*="bottom: 0"]:not([class*="toast"]):not([class*="navigation"]):not([class*="ai"]):not([class*="sparkles"]):not([class*="motion"]) {
+    display: none !important;
+  }
+
+  /* Hide scrollbar */
+  * {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  *::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .dark .glass {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(210, 100%, 50%) 0%, hsl(200, 100%, 65%) 100%);
+  }
+
+  .gradient-accent {
+    background: linear-gradient(135deg, hsl(280, 100%, 70%) 0%, hsl(320, 100%, 70%) 100%);
+  }
+
+  .shadow-ios {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .shadow-ios {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+

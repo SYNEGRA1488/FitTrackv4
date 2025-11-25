@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  password        String
+  name            String?
+  avatar          String?
+  height          Float?    // cm
+  weight          Float?    // kg
+  age             Int?
+  goal            String?   // "weight_loss", "muscle_gain", "endurance", "strength"
+  activityLevel   String?   // "sedentary", "light", "moderate", "active", "very_active"
+  theme           String    @default("light") // "light", "dark", "dark-red"
+  language        String    @default("ru") // "ru", "pl"
+  // КБЖУ (калории, белки, жиры, углеводы) - дневная норма
+  calorieGoal     Float?    // ккал
+  proteinGoal     Float?    // граммы
+  fatGoal         Float?    // граммы
+  carbGoal        Float?    // граммы
+  
+  // Подписка
+  subscriptionTier  String    @default("free") // "free", "premium"
+  subscriptionStart DateTime?
+  subscriptionEnd   DateTime?
+  subscriptionGivenBy String? // ID пользователя, который дал подписку
+  aiPlansThisMonth  Int       @default(0) // Счетчик AI-планов в текущем месяце
+  aiPlansResetDate  DateTime? // Дата, когда счетчик обнулится
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  profileComplete Boolean      @default(false)
+  workouts        Workout[]
+  aiPlans         AIPlan[]
+  workoutPlans    WorkoutPlan[]
+  subscriptionCodes SubscriptionCode[] @relation("CreatedBy")
+  receivedCodes   SubscriptionCode[] @relation("UsedBy")
+}
+
+model SubscriptionCode {
+  id              String    @id @default(cuid())
+  code            String    @unique // "FITTRACK2025XYZABC" (16 символов)
+  durationDays    Int       @default(30) // На сколько дней дается подписка
+  createdBy       User      @relation("CreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+  createdById     String
+  usedBy          User?     @relation("UsedBy", fields: [usedById], references: [id], onDelete: SetNull)
+  usedById        String?
+  usedAt          DateTime? // Когда был активирован код
+  expiresAt       DateTime  // До какого числа действует подписка (при активации)
+  isActive        Boolean   @default(true) // Можно ли еще использовать
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([code])
+  @@index([createdById])
+  @@index([usedById])
+  @@index([isActive])
+}
+
+model Workout {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  date        DateTime  @default(now())
+  duration    Int       // minutes
+  exercises   String    // JSON string: Array of exercises with sets, reps, weight
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId, date])
+}
+
+model AIPlan {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal        String
+  plan        String   // GPT-4o generated plan
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model WorkoutPlan {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  date        DateTime  // Дата запланированной тренировки
+  time        String?   // Время тренировки (опционально)
+  exercises   String    // JSON string: Array of exercises
+  duration    Int?      // Планируемая длительность в минутах
+  completed   Boolean   @default(false) // Отметка о выполнении
+  completedAt DateTime? // Когда была выполнена
+  workoutId   String?   // Связь с выполненной тренировкой (если есть)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId, date])
+  @@index([userId, completed])
+}
+
+

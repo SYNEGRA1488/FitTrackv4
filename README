@@ -1,0 +1,457 @@
+# FitTrack v2 - Cyberpunk Fitness PWA
+
+Современное PWA-приложение для фитнеса с ИИ-ассистентом на базе GPT-4o.
+
+## Технологии
+
+- **Next.js 15** (App Router)
+- **TypeScript** (строгий режим)
+- **Tailwind CSS** + **shadcn/ui** + **lucide-react**
+- **Zustand** + **TanStack Query**
+- **OpenAI GPT-4o** (через API)
+- **SQLite/PostgreSQL/MongoDB** + **Prisma**
+- **JWT** аутентификация
+- **PWA** с оффлайн-режимом
+
+## Быстрый старт
+
+### 1. Установка зависимостей
+
+```bash
+npm install
+```
+
+### 2. Настройка переменных окружения
+
+Создайте файл `.env.local`:
+
+```env
+DATABASE_URL="file:./prisma/dev.db"
+JWT_SECRET="your-super-secret-jwt-key-change-in-production"
+OPENAI_API_KEY="sk-your-openai-api-key"
+NODE_ENV="development"
+```
+
+### 3. Генерация Prisma Client и инициализация БД
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+### 4. Запуск приложения
+
+Для локального доступа:
+```bash
+npm run dev
+```
+
+Для доступа с других устройств в сети:
+```bash
+npm run dev:network
+```
+
+Затем откройте браузер на любом устройстве в одной сети по адресу: `http://YOUR_IP:3000`
+
+Узнать свой IP:
+- **Windows:** `ipconfig` (ищите IPv4 Address)
+- **Mac/Linux:** `ifconfig` или `ip addr`
+
+## Сборка для production
+
+```bash
+npm run build
+npm start
+```
+
+## Функции
+
+- ✅ Авторизация (регистрация/вход) с JWT
+- ✅ ИИ-ассистент с GPT-4o для генерации планов тренировок
+- ✅ Лимит 2 AI-плана в месяц на бесплатном тарифе
+- ✅ Премиум подписка с неограниченными AI-планами
+- ✅ Автоматическое сохранение КБЖУ из ответов ИИ в профиль
+- ✅ Календарь тренировок с возможностью удаления планов
+- ✅ Дашборд с прогрессом и графиками
+- ✅ История тренировок
+- ✅ Профиль пользователя с настройками (тема, язык, КБЖУ)
+- ✅ Выбор темы: светлая, тёмная, тёмная красная
+- ✅ Поддержка русского и польского языков
+- ✅ Анкета при первом входе
+- ✅ PWA с оффлайн-режимом
+- ✅ Мобильная адаптация
+- ✅ Cyberpunk дизайн (черный + красный неон)
+
+## Автоматическое сохранение КБЖУ
+
+Приложение автоматически сохраняет КБЖУ из ответов ИИ в профиль пользователя в формате:
+
+```
+КБЖУ:
+- Калории: XXXX ккал/день
+- Белки: XXX г/день
+- Жиры: XXX г/день
+- Углеводы: XXX г/день
+```
+
+## Работа с базой данных
+
+### Команды управления базой данных
+
+#### Генерация Prisma Client (после изменения schema.prisma)
+```bash
+npx prisma generate
+```
+
+#### Применение изменений схемы к БД
+```bash
+npx prisma db push
+```
+
+#### Создание миграций (для production)
+```bash
+npx prisma migrate dev --name migration_name
+```
+
+### Просмотр базы данных через Prisma Studio
+
+**Windows (PowerShell):**
+```powershell
+$env:DATABASE_URL = "file:C:/Users/ВАШЕ_ИМЯ/Desktop/FiTTrack v2.2/prisma/dev.db"
+npx prisma studio
+```
+
+**Windows (cmd):**
+```cmd
+set DATABASE_URL=file:C:/Users/ВАШЕ_ИМЯ/Desktop/FiTTrack v2.2/prisma/dev.db
+npx prisma studio
+```
+
+**macOS/Linux:**
+```bash
+export DATABASE_URL="file:./prisma/dev.db"
+npx prisma studio
+```
+
+Откроется веб-интерфейс по адресу [http://localhost:5555](http://localhost:5555)
+
+### Экспорт данных в CSV
+
+Экспортировать все таблицы (User, Workout, AIPlan, WorkoutPlan) в CSV:
+
+**Windows (PowerShell):**
+```powershell
+$env:DATABASE_URL = "file:C:/Users/ВАШЕ_ИМЯ/Desktop/FiTTrack v2.2/prisma/dev.db"
+node scripts/export-all-tables.js
+```
+
+Или добавьте в `package.json`:
+```json
+"scripts": {
+  "export:db": "node scripts/export-all-tables.js"
+}
+```
+
+Затем: `npm run export:db`
+
+Файлы сохранятся в `exports/`:
+- `users.csv` — пользователи
+- `workouts.csv` — выполненные тренировки
+- `ai-plans.csv` — AI-сгенерированные планы
+- `workout-plans.csv` — запланированные тренировки
+
+### Работа с другого устройства
+
+1. **Скопируйте файл БД:**
+   - Скопируйте `prisma/dev.db` на другое устройство в папку `prisma/`
+   - Запустите `npm run dev`
+   - Войдите (JWT-токены хранятся в браузере)
+
+2. **Используйте облачную БД для production:**
+   - Измените `DATABASE_URL` на PostgreSQL/MySQL
+   - Обновите `provider` в `prisma/schema.prisma`
+   - Выполните `npx prisma db push`
+
+## Система подписки
+
+### Тарифы
+
+**Бесплатный тариф (Free):**
+- 2 AI-плана в месяц
+- Создание тренировок без ограничений
+- Базовые возможности (календарь, история, профиль)
+
+**Премиум (Premium):**
+- Неограниченные AI-планы
+- Создание тренировок без ограничений
+- Приоритетная поддержка
+- Расширенная аналитика (будущее)
+- Экспорт данных (будущее)
+
+### Управление подпиской
+
+Перейдите в профиль → Подписка, чтобы:
+- Просмотреть текущий тариф
+- Увидеть использованные AI-планы за месяц
+- Перейти на Премиум
+- Отменить подписку
+
+### Выдача премиума пользователю
+
+Есть **два способа** выдать подписку после получения платежа:
+
+#### Способ 1: Прямая активация (быстро)
+
+**Для администратора:**
+1. Убедитесь, что вы залогинены аккаунтом `klevicev42@gmail.com` (или значением `ADMIN_EMAIL` из `.env.local`)
+2. Откройте `/admin/subscription` в браузере
+3. В форме "Активировать подписку вручную" заполните:
+   - **Email пользователя** — email того, кому выдать премиум (например: `user@example.com`)
+   - **Дней** — на сколько дней активировать (по умолчанию 30)
+4. Нажмите кнопку **"Активировать"**
+5. Появится сообщение "Подписка активирована"
+
+**Результат:** Пользователь немедленно получит премиум на указанное количество дней, даже если он не заходил в приложение.
+
+---
+
+#### Способ 2: Коды подарочные (код → пользователь)
+
+**Для администратора (создание кода):**
+1. Откройте `/admin/subscription`
+2. В разделе "Создать код подписки":
+   - Заполните **Дней** (например, 30)
+   - Нажмите **"Создать код"**
+3. Скопируйте появившийся код (например: `FITTRACK2025ABC123`)
+
+**Для пользователя (активация кода):**
+1. Откройте `/activate-code`
+2. Вставьте код в поле
+3. Нажмите **"Активировать код"**
+4. Появится сообщение "Подписка активирована!"
+
+**Результат:** Пользователь получит премиум на указанное количество дней.
+
+---
+
+### Выдача и использование кодов подписки (Подарки) — Детальная инструкция
+
+Вы можете создавать одноразовые коды подписки и вручную выдавать их другим пользователям. Процесс состоит из двух частей: создание/выдача кода (администратор) и активация кода (получатель).
+
+1) Создание и выдача кода (администратор)
+
+- Через админ-UI: откройте `/admin/subscription` (доступен для залогиненных администраторов). Введите продолжительность в днях и нажмите "Создать код". Копируйте код и отправляйте получателю.
+
+- Через API (curl / PowerShell). Требуется быть аутентифицированным (JWT cookie `token`):
+
+PowerShell example (создать код на 30 дней):
+```powershell
+curl -X POST "http://localhost:3000/api/subscription/codes" `
+  -H "Content-Type: application/json" `
+  -H "Cookie: token=YOUR_ADMIN_JWT_TOKEN" `
+  --data '{"durationDays":30}'
+```
+
+cURL example:
+```bash
+curl -X POST "http://localhost:3000/api/subscription/codes" \
+  -H "Content-Type: application/json" \
+  -H "Cookie: token=YOUR_ADMIN_JWT_TOKEN" \
+  --data '{"durationDays":30}'
+```
+
+Ответ содержит объект кода, например:
+```json
+{ "code": { "id": "cm_xxx", "code": "FITTRACK2025XYZABC", "durationDays": 30, "isActive": true, ... } }
+```
+
+Чтобы получить список созданных кодов (админ):
+```bash
+curl "http://localhost:3000/api/subscription/codes" -H "Cookie: token=YOUR_ADMIN_JWT_TOKEN"
+```
+
+2) Активация кода (получатель)
+
+- Через UI: пользователь должен зайти в `/activate-code`, ввести код и нажать "Активировать код". После успешной активации профиль пользователя получит `subscriptionTier: premium` и даты `subscriptionStart`/`subscriptionEnd`.
+
+- Через API (curl): пользователь должен быть аутентифицирован и выполнить запрос:
+```bash
+curl -X POST "http://localhost:3000/api/subscription/activate" \
+  -H "Content-Type: application/json" \
+  -H "Cookie: token=USER_JWT_TOKEN" \
+  --data '{"code":"FITTRACK2025XYZABC"}'
+```
+
+Ответ при успешной активации:
+```json
+{
+  "success": true,
+  "subscription": { "tier": "premium", "start": "2025-11-21T...Z", "end": "2025-12-21T...Z" },
+  "message": "Подписка активирована на 30 дней!"
+}
+```
+
+3) Как подарить подписку
+
+- Создайте код на нужное количество дней в админ-панели или через API.
+- Отправьте получателю код (мессенджер, email и т.д.).
+- Получатель активирует код на странице `/activate-code` или через API.
+
+4) Отзыв / деактивация кода
+
+- Администратор может вручную пометить код неактивным, удалив или обновив запись в `SubscriptionCode` через Prisma Studio или через админ-UI (функциональность можно расширить).
+
+5) Примечания и отладка
+
+- Коды чувствительны к регистру в текущей реализации — используйте верхний регистр при передаче (UI автоматически приводит к верху).
+- Если при активации вы видите ошибку `Code not found`:
+  - Убедитесь, что код совпадает, проверьте базу через Prisma Studio
+  - Проверьте, что код ещё активен (`isActive: true`) и не использован
+- Если появляются ошибки типа `column does not exist` — выполните миграцию/обновление Prisma:
+```bash
+npx prisma db push
+npx prisma generate
+```
+
+6) Быстрая проверка через Prisma Studio
+
+Откройте `prisma/dev.db` в Prisma Studio и откройте таблицу `SubscriptionCode`, чтобы просмотреть созданные коды, кто их создал (`createdById`) и кто активировал (`usedById`, `usedAt`).
+
+
+## Локализация (i18n)
+
+Приложение поддерживает русский (ru) и польский (pl) языки.
+
+### Переключение языка
+
+В профиле выберите язык в разделе "Язык". Выбор сохраняется в `localStorage`.
+
+### Добавление нового языка
+
+1. Откройте `lib/i18n.ts`
+2. Добавьте язык в `type Language`:
+   ```typescript
+   export type Language = 'ru' | 'pl' | 'en';
+   ```
+3. Добавьте переводы в `translations`:
+   ```typescript
+   en: {
+     'profile.title': 'Profile',
+     // ... остальные ключи
+   }
+   ```
+4. Используйте: `const t = useTranslation(language); <h1>{t('profile.title')}</h1>`
+
+## Темы оформления
+
+Доступны три темы:
+- **Светлая (light)** — стандартная светлая тема
+- **Тёмная (dark)** — тёмная тема
+- **Тёмная красная (dark-red)** — cyberpunk стиль с красным неоном
+
+### Переключение темы
+
+В профиле выберите тему в разделе "Тема оформления". Выбор сохраняется в БД.
+
+## Решение проблем
+
+### Ошибка "Prisma Client Error" в Studio
+
+**Решение:**
+```bash
+npx prisma generate
+npm ci
+npx prisma generate
+```
+
+Затем запустите Studio с явной переменной `DATABASE_URL`:
+```powershell
+$env:DATABASE_URL = "file:C:/Path/To/prisma/dev.db"
+npx prisma studio
+```
+
+### База данных пустая в Studio
+
+Убедитесь:
+1. Переменная `DATABASE_URL` указывает на правильный файл
+2. Файл `prisma/dev.db` существует
+3. Используется абсолютный путь
+
+### "Unable to open the database file"
+
+**Используйте абсолютный путь вместо относительного:**
+```powershell
+# ✅ Верно
+$env:DATABASE_URL = "file:C:/Users/user/Desktop/FiTTrack v2.2/prisma/dev.db"
+
+# ❌ Может не работать
+$env:DATABASE_URL = "file:./prisma/dev.db"
+```
+
+## Разработка
+
+### Структура Server Actions
+
+- `app/actions/ai.ts` — генерация AI-планов, управление лимитами
+- `app/actions/auth.ts` — аутентификация
+- `app/actions/user.ts` — обновление профиля
+- `app/actions/workout.ts` — управление тренировками
+- `app/actions/workout-plan.ts` — управление планами тренировок
+
+### Структура проекта
+
+```
+fittrack/
+├── app/                    # Next.js App Router
+│   ├── actions/            # Server Actions
+│   ├── api/                # API Routes
+│   ├── dashboard/          # Дашборд
+│   ├── workouts/           # Тренировки
+│   ├── history/            # История
+│   ├── profile/            # Профиль
+│   ├── subscription/       # Подписка
+│   ├── calendar/           # Календарь
+│   ├── ai-assistant/       # ИИ-ассистент
+│   ├── login/              # Вход
+│   ├── register/           # Регистрация
+│   └── onboarding/         # Первый вход
+├── components/             # React компоненты
+│   ├── ui/                 # UI компоненты (shadcn/ui)
+│   ├── layouts/            # Layout компоненты
+│   └── dashboard/          # Компоненты дашборда
+├── lib/                    # Утилиты
+│   ├── i18n.ts             # Локализация
+│   ├── subscription.ts     # Управление подписками
+│   ├── workout-parser.ts   # Парсинг AI-планов
+│   ├── auth.ts             # JWT аутентификация
+│   └── ...
+├── store/                  # Zustand stores
+├── types/                  # TypeScript типы
+├── prisma/                 # Prisma схема и БД
+├── scripts/                # Утилит-скрипты
+│   ├── export-all-tables.js
+│   └── inspect-db.js
+└── public/                 # Статические файлы
+```
+
+### Создание новых страниц
+
+1. Создайте папку в `app/` (например, `app/new-page/`)
+2. Добавьте `page.tsx`
+3. Используйте `DashboardLayout` для единого стиля:
+
+```typescript
+import DashboardLayout from '@/components/layouts/dashboard-layout';
+
+export default function NewPage() {
+  return (
+    <DashboardLayout>
+      {/* Контент */}
+    </DashboardLayout>
+  );
+}
+```
+
+## Лицензия
+
+MIT

@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /workouts
+Disallow: /history
+Disallow: /profile
+Disallow: /ai-assistant
+
+
