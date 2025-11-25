@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { apiClient } from '@/lib/api-client';
@@ -27,6 +28,10 @@ export default function LoginPage() {
     const saved = (localStorage.getItem('app-language') || 'ru') as Language;
     setLanguage(saved);
   }, []);
+  const handleLanguageChange = (value: Language) => {
+    setLanguage(value);
+    localStorage.setItem('app-language', value);
+  };
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -78,7 +83,7 @@ export default function LoginPage() {
         className="w-full max-w-md"
       >
         <Card className="shadow-ios-lg">
-            <CardHeader className="text-center">
+            <CardHeader className="text-center space-y-4">
             <div className="flex justify-center mb-4">
               <Dumbbell className="h-12 w-12 text-primary" />
             </div>
@@ -86,6 +91,18 @@ export default function LoginPage() {
             <CardDescription>
               {t('auth.loginTitle')}
             </CardDescription>
+            <div>
+              <Label className="sr-only">{t('settings.language') || 'Язык'}</Label>
+              <Select value={language} onValueChange={(value) => handleLanguageChange(value as Language)}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Выберите язык" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ru">Русский</SelectItem>
+                  <SelectItem value="pl">Polski</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">

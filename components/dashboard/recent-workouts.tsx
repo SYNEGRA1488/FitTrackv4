@@ -1,13 +1,24 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { getWorkouts } from '@/app/actions/workout';
 import { formatDate, formatTime } from '@/lib/utils';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n';
+import type { Language } from '@/lib/i18n';
 
 export default function RecentWorkouts() {
+  const [language, setLanguage] = useState<Language>('ru');
+  const t = useTranslation(language);
+
+  useEffect(() => {
+    const saved = (localStorage.getItem('app-language') || 'ru') as Language;
+    setLanguage(saved);
+  }, []);
+
   const { data: workoutsData } = useQuery({
     queryKey: ['workouts'],
     queryFn: async () => {
@@ -28,9 +39,9 @@ export default function RecentWorkouts() {
   if (recentWorkouts.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-muted-foreground mb-4">Нет тренировок</p>
+        <p className="text-muted-foreground mb-4">{t('dashboard.noRecentWorkouts')}</p>
         <Link href="/workouts">
-          <Button>Начать тренировку</Button>
+          <Button>{t('dashboard.startWorkout')}</Button>
         </Link>
       </div>
     );
@@ -53,7 +64,7 @@ export default function RecentWorkouts() {
       ))}
       <Link href="/history" className="block mt-4">
         <Button variant="outline" className="w-full gap-2">
-          Вся история
+          {t('dashboard.fullHistory')}
           <ArrowRight className="h-4 w-4" />
         </Button>
       </Link>

@@ -181,7 +181,7 @@ export default function DashboardPage() {
                 <div className="text-2xl font-bold text-foreground">
                   {stats.lastWorkout
                     ? formatDate(stats.lastWorkout)
-                    : 'Нет данных'}
+                    : t('dashboard.noData')}
                 </div>
               </CardContent>
             </Card>
@@ -197,7 +197,7 @@ export default function DashboardPage() {
             <Card>
               <CardHeader>
                 <CardTitle>{t('dashboard.progress')}</CardTitle>
-                <CardDescription>Статистика за последние недели</CardDescription>
+                <CardDescription>{t('dashboard.progressDescription')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <WorkoutChart />
@@ -213,7 +213,7 @@ export default function DashboardPage() {
             <Card>
               <CardHeader>
                 <CardTitle>{t('dashboard.recentWorkouts')}</CardTitle>
-                <CardDescription>Ваша активность</CardDescription>
+                <CardDescription>{t('dashboard.activityDescription')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <RecentWorkouts />
