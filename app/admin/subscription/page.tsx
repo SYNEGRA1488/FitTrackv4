@@ -23,6 +23,8 @@ interface SubscriptionCode {
   createdAt: string;
 }
 
+const ADMIN_PASSWORD = 'Kere14721488';
+
 export default function SubscriptionManagementPage() {
   const [codes, setCodes] = useState<SubscriptionCode[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,11 +35,58 @@ export default function SubscriptionManagementPage() {
   const [activateEmail, setActivateEmail] = useState('');
   const [activateDuration, setActivateDuration] = useState(30);
   const [activatingUser, setActivatingUser] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState('');
 
   // Загрузить все коды
   useEffect(() => {
     fetchCodes();
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (sessionStorage.getItem('admin-subscription-access') === 'granted') {
+      setIsAuthorized(true);
+    }
+  }, []);
+
+  function verifyPassword() {
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthorized(true);
+      setAuthError('');
+      setPassword('');
+      sessionStorage.setItem('admin-subscription-access', 'granted');
+    } else {
+      setAuthError('Неверный пароль');
+    }
+  }
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-900/90 p-4">
+        <Card className="p-8 w-full max-w-md space-y-4">
+          <h1 className="text-2xl font-semibold text-center">Доступ к админ-панели</h1>
+          <p className="text-sm text-slate-500 text-center">
+            Введите пароль, чтобы продолжить
+          </p>
+          <Input
+            type="password"
+            placeholder="Пароль"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') verifyPassword();
+            }}
+          />
+          {authError && <p className="text-sm text-red-500 text-center">{authError}</p>}
+          <Button className="w-full" onClick={verifyPassword}>
+            Войти
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
   async function fetchCodes() {
     try {

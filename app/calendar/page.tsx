@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import DashboardLayout from '@/components/layouts/dashboard-layout';
-import { getWorkoutPlans, toggleWorkoutPlanComplete } from '@/app/actions/workout-plan';
+import { getWorkoutPlans, toggleWorkoutPlanComplete, deleteWorkoutPlan } from '@/app/actions/workout-plan';
 import { getAIPlans } from '@/app/actions/ai';
 import { parseWorkoutPlan } from '@/lib/workout-parser';
-import { Calendar, CheckCircle2, Circle, ChevronLeft, ChevronRight, Plus, Clock, Dumbbell } from 'lucide-react';
+import { Calendar, CheckCircle2, Circle, ChevronLeft, ChevronRight, Plus, Clock, Dumbbell, Trash2 } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, startOfWeek, endOfWeek } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -46,6 +46,7 @@ export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedPlans, setSelectedPlans] = useState<WorkoutPlan[]>([]);
   const [rawParsedByDate, setRawParsedByDate] = useState<Record<string, {title:string; exercises: {name:string; sets:number; reps:number; weight:number; restSeconds?: number}[] }>>({});
+  const [deletingPlanId, setDeletingPlanId] = useState<string | null>(null);
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -137,6 +138,38 @@ export default function CalendarPage() {
         description: t('calendar.updateFail'),
         variant: 'destructive',
       });
+    }
+  };
+
+  const handleDeletePlan = async (planId: string) => {
+    try {
+      setDeletingPlanId(planId);
+      const result = await deleteWorkoutPlan(planId);
+      if (result.error) {
+        toast({
+          title: t('common.error') || 'Ошибка',
+          description: result.error || 'Не удалось удалить план',
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: t('common.success') || 'Готово',
+          description: t('calendar.planDeleted') || 'План удалён',
+        });
+        setSelectedPlans((prev) => prev.filter((plan) => plan.id !== planId));
+        if (selectedPlans.length === 1) {
+          setSelectedDate(null);
+        }
+        queryClient.invalidateQueries({ queryKey: ['workout-plans'] });
+      }
+    } catch (error) {
+      toast({
+        title: t('common.error') || 'Ошибка',
+        description: 'Не удалось удалить план',
+        variant: 'destructive',
+      });
+    } finally {
+      setDeletingPlanId(null);
     }
   };
 
@@ -426,7 +459,7 @@ export default function CalendarPage() {
                       transition={{ delay: index * 0.1 }}
                       className="border border-border rounded-lg p-4 bg-secondary/30"
                     >
-                      <div className="flex items-start justify-between mb-3">
+                      <div className="flex flex-col gap-3 mb-3 sm:flex-row sm:items-start sm:justify-between">
                         <div className="flex-1">
                           <h3 className="text-lg font-bold text-foreground mb-1">{plan.title}</h3>
                           {plan.description && (
@@ -457,11 +490,23 @@ export default function CalendarPage() {
                             )}
                           </div>
                         </div>
-                        <Checkbox
-                          checked={plan.completed}
-                          onCheckedChange={() => handleToggleComplete(plan.id)}
-                          className="h-5 w-5"
-                        />
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            checked={plan.completed}
+                            onCheckedChange={() => handleToggleComplete(plan.id)}
+                            className="h-5 w-5"
+                          />
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeletePlan(plan.id)}
+                            disabled={deletingPlanId === plan.id}
+                            className="flex items-center gap-1"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            {deletingPlanId === plan.id ? t('common.loading') : t('common.delete')}
+                          </Button>
+                        </div>
                       </div>
                       
                       <div className="mt-4 space-y-3">
