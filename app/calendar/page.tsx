@@ -223,17 +223,17 @@ export default function CalendarPage() {
               </div>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="overflow-x-hidden">
             <div className="w-full flex justify-center">
-              <div className="sm:scale-100 scale-[0.5] origin-top-left">
-                <div className="grid grid-cols-7 gap-2 w-[700px]">
+              <div className="sm:scale-100 scale-[0.55] origin-top mx-auto inline-block">
+                <div className="grid grid-cols-7 gap-2 w-[700px] mx-auto">
                   {t('calendar.weekShort').split(',').map((day) => (
                     <div key={day} className="text-center text-sm font-medium text-foreground-red p-2">
                       {day}
                     </div>
                   ))}
                 </div>
-                <div className="grid grid-cols-7 gap-2 w-[700px]">
+                <div className="grid grid-cols-7 gap-2 w-[700px] mx-auto">
                 {days.map((day, index) => {
                 const dayPlans = getPlansForDate(day);
                 const isCurrentMonth = isSameMonth(day, currentDate);
