@@ -455,7 +455,7 @@ export default function CalendarPage() {
         <AnimatePresence>
           {selectedDate && selectedPlans.length > 0 && (
             <Dialog open={!!selectedDate} onOpenChange={(open) => !open && setSelectedDate(null)}>
-              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border">
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-background border-border">
                 <DialogHeader>
                   <DialogTitle className="text-foreground text-2xl">
                     {format(selectedDate, 'dd MMMM yyyy')}

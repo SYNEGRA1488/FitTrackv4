@@ -112,7 +112,7 @@ export default function RegisterPage() {
               {t('auth.createAccount')}
             </CardDescription>
             <div>
-              <Label className="sr-only">{t('settings.language') || 'Язык'}</Label>
+              <Label className="mb-2 block">{t('profile.language') || 'Язык'}</Label>
               <Select value={language} onValueChange={(value: Language) => handleLanguageChange(value)}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Выберите язык" />
