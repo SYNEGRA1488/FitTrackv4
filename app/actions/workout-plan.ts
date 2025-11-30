@@ -95,15 +95,67 @@ export async function toggleWorkoutPlanComplete(planId: string) {
       return { error: 'План не найден' };
     }
 
-    const updated = await prisma.workoutPlan.update({
-      where: { id: planId },
-      data: {
-        completed: !plan.completed,
-        completedAt: !plan.completed ? new Date() : null,
-      },
-    });
+    // Переключаем статус. При установке completed=true создаем запись тренировки и сохраняем ссылку
+    if (!plan.completed) {
+      // Парсим упражнения из плана
+      let exercises: Exercise[] = [];
+      try {
+        exercises = JSON.parse(plan.exercises as any) as Exercise[];
+      } catch {
+        exercises = [];
+      }
 
-    return { success: true, plan: updated };
+      // Помечаем подходы как выполненные
+      const completedExercises = (exercises || []).map((ex) => ({
+        ...ex,
+        sets: Array.isArray(ex.sets)
+          ? ex.sets.map((s) => ({ ...s, completed: true }))
+          : [],
+      }));
+
+      // Создаем тренировку в истории
+      const workout = await prisma.workout.create({
+        data: {
+          userId: user.userId,
+          name: plan.title,
+          date: new Date(plan.date),
+          duration: plan.duration ?? 60,
+          exercises: JSON.stringify(completedExercises),
+          notes: plan.description ?? null,
+        },
+      });
+
+      const updated = await prisma.workoutPlan.update({
+        where: { id: planId },
+        data: {
+          completed: true,
+          completedAt: new Date(),
+          workoutId: workout.id,
+        },
+      });
+
+      return { success: true, plan: updated };
+    } else {
+      // Снимаем отметку: удаляем связанную тренировку, если она была создана автоматически
+      if (plan.workoutId) {
+        try {
+          await prisma.workout.delete({ where: { id: plan.workoutId } });
+        } catch (e) {
+          // Игнорируем, если тренировка уже удалена вручную
+        }
+      }
+
+      const updated = await prisma.workoutPlan.update({
+        where: { id: planId },
+        data: {
+          completed: false,
+          completedAt: null,
+          workoutId: null,
+        },
+      });
+
+      return { success: true, plan: updated };
+    }
   } catch (error) {
     console.error('Toggle workout plan complete error:', error);
     return { error: 'Ошибка при обновлении плана' };

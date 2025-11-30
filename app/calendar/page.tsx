@@ -131,6 +131,8 @@ export default function CalendarPage() {
         });
       } else {
         queryClient.invalidateQueries({ queryKey: ['workout-plans'] });
+        queryClient.invalidateQueries({ queryKey: ['workouts'] });
+        queryClient.invalidateQueries({ queryKey: ['workout-stats'] });
       }
     } catch (error) {
       toast({
@@ -217,7 +219,8 @@ export default function CalendarPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-7 gap-2">
+            <div className="overflow-x-auto -mx-2">
+              <div className="grid grid-cols-7 gap-2 min-w-[700px] sm:min-w-0 px-2">
               {/* Дни недели */}
               {t('calendar.weekShort').split(',').map((day) => (
                 <div key={day} className="text-center text-sm font-medium text-foreground-red p-2">
@@ -240,7 +243,7 @@ export default function CalendarPage() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: index * 0.01 }}
                     className={`
-                      min-h-[100px] p-2 border rounded-lg cursor-pointer transition-all relative
+                      min-h-[90px] sm:min-h-[100px] p-2 border rounded-lg cursor-pointer transition-all relative
                       ${isCurrentMonth ? 'border-border bg-secondary/30' : 'border-muted bg-card/50 opacity-60'}
                       ${isToday 
                         ? 'ring-2 ring-neon-red bg-primary/10 border-border-red shadow-ios' 
@@ -351,6 +354,7 @@ export default function CalendarPage() {
                   </motion.div>
                 );
               })}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -601,4 +605,3 @@ export default function CalendarPage() {
     </DashboardLayout>
   );
 }
-
