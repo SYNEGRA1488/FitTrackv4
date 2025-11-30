@@ -225,15 +225,14 @@ export default function CalendarPage() {
           </CardHeader>
           <CardContent>
             <div>
-              <div className="grid grid-cols-7 gap-1">
-              {/* Дни недели */}
-              {t('calendar.weekShort').split(',').map((day) => (
-                <div key={day} className="text-center text-sm font-medium text-foreground-red p-2">
-                  {day}
-                </div>
-              ))}
-
-              {/* Дни месяца */}
+              <div className="hidden sm:grid sm:grid-cols-7 gap-1 px-2">
+                {t('calendar.weekShort').split(',').map((day) => (
+                  <div key={day} className="text-center text-sm font-medium text-foreground-red p-2">
+                    {day}
+                  </div>
+                ))}
+              </div>
+              <div className="grid grid-cols-4 sm:grid-cols-7 gap-1 px-2">
               {days.map((day, index) => {
                 const dayPlans = getPlansForDate(day);
                 const isCurrentMonth = isSameMonth(day, currentDate);
@@ -248,7 +247,7 @@ export default function CalendarPage() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: index * 0.01 }}
                     className={`
-                      min-h-[80px] sm:min-h-[96px] p-1.5 border rounded-lg cursor-pointer transition-all relative
+                      min-h-[100px] sm:min-h-[96px] p-1.5 border rounded-lg cursor-pointer transition-all relative
                       ${isCurrentMonth ? 'border-border bg-secondary/30' : 'border-muted bg-card/50 opacity-60'}
                       ${isToday 
                         ? 'ring-2 ring-neon-red bg-primary/10 border-border-red shadow-ios' 
@@ -298,7 +297,7 @@ export default function CalendarPage() {
                               key={plan.id}
                               initial={{ scale: 0.9 }}
                               animate={{ scale: 1 }}
-                              className={`
+                               className={`
                                 text-[11px] p-1.5 rounded cursor-pointer flex flex-col gap-1
                                 ${plan.completed 
                                   ? 'bg-green-500/20 text-green-400 border border-green-500/50' 
@@ -306,8 +305,8 @@ export default function CalendarPage() {
                                   ? 'bg-gray-500/20 text-gray-400 border border-gray-500/50 opacity-50'
                                   : 'bg-primary/20 text-foreground-red border border-border-red/50'
                                 }
-                                hover:opacity-80 hover:scale-105 transition-all min-h-[60px]
-                              `}
+                                hover:opacity-80 hover:scale-105 transition-all min-h-[64px]
+                               `}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleDateClick(day);
