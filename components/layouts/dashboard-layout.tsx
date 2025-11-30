@@ -188,31 +188,31 @@ export default function DashboardLayout({
 
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-xl border-t border-border/50 shadow-lg">
-        <div className="container mx-auto px-2 relative">
-          <div className="flex items-center justify-around h-20 relative">
+        <div className="container mx-auto px-2 relative overflow-x-auto">
+          <div className="flex items-center h-20 relative gap-2 justify-start flex-nowrap">
             {navItems(t).map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
               return (
-                <Link key={item.href} href={item.href} className="flex-1">
+                <Link key={item.href} href={item.href} className="flex-1 min-w-[88px]">
                   <Button
                     variant="ghost"
                     className={`w-full flex flex-col items-center gap-1 h-auto py-2 ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
                   >
                     <Icon className={`h-5 w-5 ${isActive ? 'text-primary' : ''}`} />
-                    <span className="text-xs font-medium">{item.label}</span>
+                    <span className="text-[11px] font-medium max-w-[72px] truncate">{item.label}</span>
                   </Button>
                 </Link>
               );
             })}
             {/* Profile */}
-            <Link href="/profile" className="flex-1">
+            <Link href="/profile" className="flex-1 min-w-[88px]">
               <Button
                 variant="ghost"
                 className={`w-full flex flex-col items-center gap-1 h-auto py-2 ${pathname === '/profile' ? 'text-primary' : 'text-muted-foreground'}`}
               >
                 <User className={`h-5 w-5 ${pathname === '/profile' ? 'text-primary' : ''}`} />
-                <span className="text-xs font-medium max-w-[60px] truncate">{userName}</span>
+                <span className="text-[11px] font-medium max-w-[56px] truncate">{userName}</span>
               </Button>
             </Link>
           </div>
@@ -221,4 +221,3 @@ export default function DashboardLayout({
     </div>
   );
 }
-

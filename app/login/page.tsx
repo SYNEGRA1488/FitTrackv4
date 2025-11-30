@@ -93,7 +93,7 @@ export default function LoginPage() {
             </CardDescription>
             <div>
               <Label className="sr-only">{t('settings.language') || 'Язык'}</Label>
-              <Select value={language} onValueChange={(value) => handleLanguageChange(value as Language)}>
+              <Select value={language} onValueChange={(value: Language) => handleLanguageChange(value)}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Выберите язык" />
                 </SelectTrigger>
@@ -148,5 +148,4 @@ export default function LoginPage() {
     </div>
   );
 }
-
 

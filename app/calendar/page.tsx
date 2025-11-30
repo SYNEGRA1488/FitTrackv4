@@ -461,7 +461,7 @@ export default function CalendarPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="border border-border rounded-lg p-4 bg-secondary/30"
+                      className="border border-border rounded-lg p-4 bg-card"
                     >
                       <div className="flex flex-col gap-3 mb-3 sm:flex-row sm:items-start sm:justify-between">
                         <div className="flex-1">
