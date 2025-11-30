@@ -224,16 +224,17 @@ export default function CalendarPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div>
-              <div className="hidden sm:grid sm:grid-cols-7 gap-1 px-2">
-                {t('calendar.weekShort').split(',').map((day) => (
-                  <div key={day} className="text-center text-sm font-medium text-foreground-red p-2">
-                    {day}
-                  </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-4 sm:grid-cols-7 gap-1 px-2">
-              {days.map((day, index) => {
+            <div className="w-full flex justify-center">
+              <div className="sm:scale-100 scale-[0.5] origin-top-left">
+                <div className="grid grid-cols-7 gap-2 w-[700px]">
+                  {t('calendar.weekShort').split(',').map((day) => (
+                    <div key={day} className="text-center text-sm font-medium text-foreground-red p-2">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+                <div className="grid grid-cols-7 gap-2 w-[700px]">
+                {days.map((day, index) => {
                 const dayPlans = getPlansForDate(day);
                 const isCurrentMonth = isSameMonth(day, currentDate);
                 const isToday = isSameDay(day, new Date());
@@ -362,7 +363,8 @@ export default function CalendarPage() {
                     </div>
                   </motion.div>
                 );
-              })}
+                })}
+                </div>
               </div>
             </div>
           </CardContent>
