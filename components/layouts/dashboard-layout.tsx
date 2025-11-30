@@ -155,30 +155,28 @@ export default function DashboardLayout({
       </div>
 
       {/* AI Assistant - Draggable Button */}
-      {pathname !== '/ai-assistant' && (
-        <motion.div
-          ref={buttonRef}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ 
-            opacity: 1, 
-            scale: isDragging ? 1.1 : 1,
-            x: aiButtonPosition.x,
-            y: aiButtonPosition.y,
-          }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          className="fixed left-1/2 bottom-24 z-50 cursor-move touch-none"
-          onMouseDown={handleDragStart}
-          onTouchStart={handleDragStart}
-          style={{
-            transform: `translate(${aiButtonPosition.x}px, ${aiButtonPosition.y}px)`,
-          }}
-        >
-          <Link href="/ai-assistant" onClick={(e) => {
-            // Предотвращаем переход по ссылке при перетаскивании
-            if (isDragging) {
-              e.preventDefault();
-            }
-          }}>
+        {pathname !== '/ai-assistant' && (
+          <motion.div
+            ref={buttonRef}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ 
+              opacity: 1, 
+              scale: isDragging ? 1.1 : 1,
+              x: aiButtonPosition.x,
+              y: aiButtonPosition.y,
+            }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="fixed left-1/2 bottom-24 z-50 cursor-move touch-none"
+            onMouseDown={handleDragStart}
+            onTouchStart={handleDragStart}
+          >
+            <Link href="/ai-assistant" onClick={(e) => {
+              // Предотвращаем переход по ссылке при перетаскивании
+              if (isDragging) {
+                e.preventDefault();
+              }
+            }}>
             <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all bg-secondary/80 border border-border/50 hover:bg-secondary select-none">
               <Sparkles className="h-6 w-6 text-foreground pointer-events-none" />
             </div>

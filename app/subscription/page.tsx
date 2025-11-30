@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/layouts/dashboard-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Check, X, Zap } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 import type { Language } from '@/lib/i18n';
@@ -26,6 +27,7 @@ export default function SubscriptionPage() {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
   const [loading, setLoading] = useState(true);
   const [currency, setCurrency] = useState<'PLN' | 'USD'>('PLN');
+  const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
 
   useEffect(() => {
     const saved = (localStorage.getItem('app-language') || 'ru') as Language;
@@ -275,7 +277,7 @@ export default function SubscriptionPage() {
               {subscription?.tier === 'premium' ? (
                 <>
                   <Button 
-                    onClick={handleCancel}
+                    onClick={() => setConfirmCancelOpen(true)}
                     variant="outline"
                     className="w-full mb-6 border-border-red/50"
                   >
@@ -331,6 +333,21 @@ export default function SubscriptionPage() {
             </div>
           </CardContent>
         </Card>
+
+        <Dialog open={confirmCancelOpen} onOpenChange={setConfirmCancelOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t('subscription.cancelConfirmTitle')}</DialogTitle>
+              <DialogDescription>{t('subscription.cancelConfirmDesc')}</DialogDescription>
+            </DialogHeader>
+            <div className="flex gap-3 justify-end mt-4">
+              <Button variant="outline" onClick={() => setConfirmCancelOpen(false)}>{t('common.no')}</Button>
+              <Button className="bg-foreground-red hover:bg-red-600" onClick={() => { setConfirmCancelOpen(false); handleCancel(); }}>
+                {t('common.yes')}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );

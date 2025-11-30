@@ -130,6 +130,11 @@ export default function CalendarPage() {
           variant: 'destructive',
         });
       } else {
+        setSelectedPlans((prev) => prev.map((p) => p.id === planId ? { ...p, completed: !p.completed } : p));
+        queryClient.setQueryData(['workout-plans', format(startOfMonth(currentDate), 'yyyy-MM-dd'), format(endOfMonth(currentDate), 'yyyy-MM-dd')], (old: any) => {
+          if (!old || !Array.isArray(old)) return old;
+          return old.map((p: any) => p.id === planId ? { ...p, completed: !p.completed } : p);
+        });
         queryClient.invalidateQueries({ queryKey: ['workout-plans'] });
         queryClient.invalidateQueries({ queryKey: ['workouts'] });
         queryClient.invalidateQueries({ queryKey: ['workout-stats'] });
@@ -219,8 +224,8 @@ export default function CalendarPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto -mx-2">
-              <div className="grid grid-cols-7 gap-2 min-w-[700px] sm:min-w-0 px-2">
+            <div>
+              <div className="grid grid-cols-7 gap-1">
               {/* Дни недели */}
               {t('calendar.weekShort').split(',').map((day) => (
                 <div key={day} className="text-center text-sm font-medium text-foreground-red p-2">
@@ -243,7 +248,7 @@ export default function CalendarPage() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: index * 0.01 }}
                     className={`
-                      min-h-[90px] sm:min-h-[100px] p-2 border rounded-lg cursor-pointer transition-all relative
+                      min-h-[80px] sm:min-h-[96px] p-1.5 border rounded-lg cursor-pointer transition-all relative
                       ${isCurrentMonth ? 'border-border bg-secondary/30' : 'border-muted bg-card/50 opacity-60'}
                       ${isToday 
                         ? 'ring-2 ring-neon-red bg-primary/10 border-border-red shadow-ios' 
@@ -258,11 +263,16 @@ export default function CalendarPage() {
                     {isToday && (
                       <div className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full animate-pulse"></div>
                     )}
+                    {dayPlans.some((p) => p.completed) && (
+                      <div className="absolute top-1 left-1 text-green-500">
+                        <CheckCircle2 className="h-3 w-3" />
+                      </div>
+                    )}
                     <div className={`
-                      text-sm font-medium mb-1 flex items-center gap-1
+                      text-[12px] font-medium mb-1 flex items-center gap-1
                       ${isCurrentMonth ? 'text-foreground' : 'text-muted-foreground'}
                       ${isToday 
-                        ? 'text-foreground-red font-bold text-base' 
+                        ? 'text-foreground-red font-bold text-[13px]' 
                         : isPast 
                         ? 'text-muted-foreground opacity-60' 
                         : ''
@@ -289,14 +299,14 @@ export default function CalendarPage() {
                               initial={{ scale: 0.9 }}
                               animate={{ scale: 1 }}
                               className={`
-                                text-xs p-2 rounded cursor-pointer flex flex-col gap-1.5
+                                text-[11px] p-1.5 rounded cursor-pointer flex flex-col gap-1
                                 ${plan.completed 
                                   ? 'bg-green-500/20 text-green-400 border border-green-500/50' 
                                   : isPlanPast
                                   ? 'bg-gray-500/20 text-gray-400 border border-gray-500/50 opacity-50'
                                   : 'bg-primary/20 text-foreground-red border border-border-red/50'
                                 }
-                                hover:opacity-80 hover:scale-105 transition-all min-h-[70px]
+                                hover:opacity-80 hover:scale-105 transition-all min-h-[60px]
                               `}
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -311,11 +321,11 @@ export default function CalendarPage() {
                                   <Circle className="h-3 w-3 mt-0.5 flex-shrink-0" />
                                 )}
                                 <div className="flex-1 min-w-0">
-                                  <div className="font-medium break-words line-clamp-2">{plan.title}</div>
+                                  <div className="font-medium break-words line-clamp-2 leading-tight">{plan.title}</div>
                                 </div>
                               </div>
                               {plan.exercises.length > 0 && (
-                                <div className="text-[10px] opacity-70">
+                                <div className="text-[10px] opacity-70 leading-tight">
                                   <div className="break-words line-clamp-2">
                                     {plan.exercises.map((ex, idx) => {
                                       const name = ex.name?.toString().trim();
