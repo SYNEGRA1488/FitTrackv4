@@ -140,7 +140,7 @@ export default function WorkoutsPage() {
           </p>
         </div>
 
-        <Card className="bg-black border-border">
+        <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">{t('workouts.infoTitle')}</CardTitle>
           </CardHeader>
@@ -188,7 +188,7 @@ export default function WorkoutsPage() {
                     key={exerciseIndex}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-4 border border-border rounded-lg bg-secondary/50"
+                    className="p-4 border border-border rounded-lg bg-card"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <Input

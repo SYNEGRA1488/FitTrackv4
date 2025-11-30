@@ -321,25 +321,9 @@ export default function CalendarPage() {
                                   <Circle className="h-3 w-3 mt-0.5 flex-shrink-0" />
                                 )}
                                 <div className="flex-1 min-w-0">
-                                  <div className="font-medium break-words line-clamp-2 leading-tight">{plan.title}</div>
+                                  <div className="font-medium break-words leading-tight">{t('calendar.workoutLabel')}</div>
                                 </div>
                               </div>
-                              {plan.exercises.length > 0 && (
-                                <div className="text-[10px] opacity-70 leading-tight">
-                                  <div className="break-words line-clamp-2">
-                                    {plan.exercises.map((ex, idx) => {
-                                      const name = ex.name?.toString().trim();
-                                      const notes = (ex as any).notes || '';
-                                      if (name && name.length > 2 && name !== plan.title) return name;
-                                      if (notes && notes.length > 2) return notes;
-                                      if (plan.description && plan.description.length > 2) return plan.description;
-                                      // Don't return plan.title here to avoid repeating the header for each exercise
-                                      return t('calendar.exercisePlaceholder').replace('{n}', String(idx + 1));
-                                    }).join(', ')}
-                                  </div>
-                                  <div className="mt-1">{plan.exercises.length} {t('calendar.exercises')} • {plan.duration || 60} {t('calendar.minutes')}</div>
-                                </div>
-                              )}
                             </motion.div>
                           );
                         })}
